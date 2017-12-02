@@ -11,13 +11,24 @@ class PostsNew extends Component {
           type="text"
           {...field.input}
         />
+        {field.meta.error}
       </div>
     );
   }
 
+  onSubmit(values) {
+    console.log(values);
+  }
+
   render() {
+    // handleSubmit is put onto component props by ReduxForm
+    // in the same way react-redux connect adds states to props
+    const { handleSubmit } = this.props;
+
     return (
-      <form>
+      // handleSubmit wrapper insures this.onSubmit is called
+      // only if the form passes validation
+      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <Field
           label="Title"
           name="title"
@@ -33,6 +44,7 @@ class PostsNew extends Component {
           name="content"
           component={this.renderField}
         />
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     );
   }
@@ -42,6 +54,7 @@ function validate(values) {
   const errors = {};
 
   // Validate the inputs from 'values'
+  // errors property names need to match the field names
   if (!values.title) {
     errors.title = "Please enter a title!";
   }
